@@ -63,7 +63,7 @@ FinalTable <- X_full %>%
   summarise_at(tidyindices,mean) # passed the tidyindices vector containing the names of all the variables (apart from subject and activity)
 
 # Saving the table on a txt file
-write.table(FinalTable,"AssignmentTable.txt")
+write.table(FinalTable,"AssignmentTable.txt", row.name=FALSE)
 
 # Reading the table
 # data <- read.table("AssignmentTable.txt", header = TRUE) 
