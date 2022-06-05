@@ -65,6 +65,6 @@ FinalTable <- X_full %>%
 # Saving the table on a txt file
 write.table(FinalTable,"AssignmentTable.txt")
 
-# Reading the final table
+# Reading the table
 # data <- read.table("AssignmentTable.txt", header = TRUE) 
 # View(data)
