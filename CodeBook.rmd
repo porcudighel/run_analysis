@@ -1,0 +1,94 @@
+---
+title: "CODEBOOK - Final Assignment for Getting and Cleaning Data"
+author: "Porcudighel"
+date: "5 June 2022"
+output:
+  html_document:
+    keep_md: yes
+---
+
+
+## Project Description
+One of the most exciting areas in all of data science right now is wearable computing - see for example this article . Companies like Fitbit, Nike, and Jawbone Up are racing to develop the most advanced algorithms to attract new users. The data linked to from the course website represent data collected from the accelerometers from the Samsung Galaxy S smartphone. A full description is available at the site where the data was obtained:  
+http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones  
+Original data:  
+https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip  
+
+The project consists of one R script called run_analysis.R that does the following: 
+- Merges the training and the test sets to create one data set.
+- Extracts only the measurements on the mean and standard deviation for each measurement. 
+- Uses descriptive activity names to name the activities in the data set
+- Appropriately labels the data set with descriptive variable names. 
+- From the data set in the previous, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
+
+##Study design and data processing
+
+###Collection of the raw data
+Data collected from the zip file as by link in *Project Description*.
+
+###Notes on the original (raw) data 
+The full data consist of 10299 observations of 561 variables over 30 subjects in 6 different conditions.
+
+##Creating the tidy datafile
+
+###Guide to create the tidy data file
+Download the file as by link in *Project Description* and unzip it.
+From the resulting folder, load into tables the .txt files from the test folder (subject_test, X_test, y_test) and train folder (subject_train, X_train, y_train), and the files activity_labels and features (i.e., the variable names) from the main folder.
+As by first point in *Project Description*, bind together by rows the test and train datasets (X, y and subject).
+As by second poinrt in *Project Description*, from the full X dataset, select only the columns corresponding to average (name containing "mean") and standard deviation (name containing "std") of the original measurements. In the same way, create a subset of the dataset containing the features containing "mean" and "std".
+Merge by column the "subject", "y" and this latter "X" dataset, in the order, obtaining a new table with 10299 observations and 81 variables.
+As by fifth point in *Project Description*, an independent tidy data set with the average of each variable for each activity and each subject is generated.
+
+###Cleaning of the data
+As by third point in *Project Description*, the activity column (column 2) is factorised and the numbers are replaced by descriptive activity names. As well, the subject column (column 1) is factorised.
+As by fourth point in *Project Description*, rename the column names of the full dataset with the names in the subset of the features (column 3 to 81) and with "subject" (column 1) and "activity" (column 2). Before doing this, the feature names are tidied by removing special characters and replacing them with the underline character.
+
+##Description of the variables in the AssignmentTable.txt file
+General description:
+ - Dimensions of the dataset: 180 rows by 81 columns.
+ - Summary of the data: in the first two columns the subject and acitvity are identified, to which the average for each of the remaining 79 measurables is associated. 
+ - Variables present in the dataset
+
+(you can easily use Rcode for this, just load the dataset and provide the information directly form the tidy data file)
+
+###subject
+Subject record number
+
+ - Factor
+ - 30 levels: 1 to 30
+ - No unit of measurement
+
+###activity
+Description of activity performed by subject during data acquisition
+
+ - Factor
+ - 6 levels: WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING
+ - No unit of measurement
+
+###tBodyAcc_mean_X
+Average of tBodyAcc-mean()-X per activity per subject
+
+ - Numeric
+ - Unit of measurement: same as tBodyAcc-mean()-X (raw signal)
+
+###All the rest
+As by table below, average (column *Variable*) of corresponding variable from original files (*Original*)
+```{r, echo=FALSE, message=FALSE}
+library(knitr)
+library(dplyr)
+features <- read.table("./UCI HAR Dataset/features.txt")
+statindices <- grep("mean()|std()",features$V2)
+tidyindices <- features[statindices,2]
+tidyindices %<>%
+  gsub("[)]", "",.) %>%
+  gsub("[$(]", "",.) %>%
+  gsub("[(]", "_",.) %>%
+  gsub("[,]", "_",.) %>%
+  gsub("[-]", "_",.)
+variables <- data.frame(tidyindices,features[statindices,2])
+names(variables) <- c("Variable","Source")
+knitr::kable(variables,align = 'c')
+```
+##Sources
+Template adapted from https://gist.github.com/JorisSchut/dbc1fc0402f28cad9b41
+

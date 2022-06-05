@@ -1,0 +1,31 @@
+---
+title: "README - Final Assignment for Getting and Cleaning Data"
+author: "Porcudighel"
+date: "5 June 2022"
+output:
+  html_document:
+    keep_md: yes
+---
+
+###Files in project
+The project contains a code file *run_analysis.R*, a file *AssignmentTable.txt* containing the resulting tidy table, a *Codebook.rmd* file describing the project and variables, and this same *README.rmd* file.
+
+###Working of run_analysis.R
+Data acquired from a Samsung Galaxy S smartphone while different subjects where perfomring different activities ( https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip) are collected and elaborated by the script *run_analysis.R*, in order to produce a tidy table with each different measurement (variable) averaged for each subject and activity.
+
+**1. Merges the training and the test sets to create one data set.**  
+After the zip file is downloaded and unzipped, the files are loaded to tables with suffix _train and _test. The file of the features and activity labels are as well loaded in tables. The _train and _test tables containing the data (X), the subject (subject) and activity identifiers (y) are merged by rows, obtaining new _tot tables.  
+**2. Extracts only the measurements on the mean and standard deviation for each measurement.**\
+The indices of the variables of interest are identified in the feature file, these indices are used to select the corresponding columns in the _tot table. Addtionally, the subjects and activities tables are merged to the _tot table by column, obtaining a new _full table.  
+**3. Uses descriptive activity names to name the activities in the data set.**\
+After factorising the newly added columns, the levels of the activity column are change to the descriptive ones found in the relative table.  
+**4. Appropriately labels the data set with descriptive variable names.**\
+The first two columns of the _full table are renamed, and the rest of the columns are renamed in two steps: firstly by using the names in the features table identified by the indices found in step 2, and then by cleaning such names from special characters.  
+**5. Creates a second, independent tidy data set with the average of each variable for each activity and each subject.**\
+The _full table is grouped by subject and activity, and by use of the command *summarise_at* the average of each subject/activity group is produced. This table is finally saved in the file "AssignmentTable.txt".  
+This table can be read with the command line
+
+```r{}
+data <- read.table("AssignmentTable.txt", header = TRUE) 
+View(data)
+```
